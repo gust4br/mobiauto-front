@@ -17,8 +17,6 @@
 
 // "Nanananananananananana Batman!" --> "##########################man!"
 function maskify(string) {
-  //you code here...
-
   return string.replace(/.(?=.{4})/g, "#");
 }
 

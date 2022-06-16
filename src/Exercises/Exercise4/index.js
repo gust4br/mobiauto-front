@@ -20,8 +20,27 @@
 //     49,         'Buzz', 50
 //   ]
 
-function fizzBuzz(number) {
-  //you code here...
+function fizzBuzz(length) {
+  const numbers = [];
+
+  for (let i = 0; i < length; i++) {
+    const number = i + 1;
+    const isMultipleOfThree = number % 3 == 0;
+    const isMultipleOfFive = number % 5 == 0;
+
+    if(isMultipleOfThree && isMultipleOfFive)
+      numbers.push('FizzBuzz');
+
+    else if(isMultipleOfThree && !isMultipleOfFive)
+      numbers.push('Fizz');
+
+    else if(!isMultipleOfThree && isMultipleOfFive)
+      numbers.push('Buzz');   
+
+    numbers.push(number);
+  }
+
+  return numbers;
 }
 
 module.exports = fizzBuzz;
