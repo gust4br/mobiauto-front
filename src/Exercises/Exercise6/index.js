@@ -1,13 +1,10 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import 'h8k-components'
 
 import { image1, image2, image3, image4 } from './assets/images'
 import { Thumbs, Viewer } from './components'
 
-const title = 'Catalog Viewer'
-
-
-
+const title = 'Catalog Viewer';
 
 function App() {
   const catalogsList = [
@@ -27,13 +24,41 @@ function App() {
       thumb: image4,
       image: image4
     }
-  ]
+  ];
 
-  const [catalogs] = useState([...catalogsList])
-  const [activeIndex, setActiveIndex] = useState(0)
-  const [slideTimer, setSlideTimer] = useState(false)
-  const [slideDuration] = useState(3000)
+  const [catalogs] = useState([...catalogsList]);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [slideTimer, setSlideTimer] = useState(false);
+  const [slideDuration] = useState(3000);
 
+  function handleImageClick(id){
+    setActiveIndex(id);
+  }
+
+  function handleCarouselSlide(dir){
+    let catalogSize = catalogs.length - 1;
+    switch(dir){
+      case 'next':
+          if(activeIndex >= catalogSize)
+            setActiveIndex(0);
+          else 
+            setActiveIndex(activeIndex => activeIndex + 1);
+          break;
+      case 'prev':
+          if(activeIndex <= 0)
+            setActiveIndex(catalogSize);
+          else
+            setActiveIndex(activeIndex => activeIndex - 1);
+          break;
+      default: 
+        break;
+    }
+  }
+  useEffect(() => {
+    const slide = slideTimer && setInterval(() => handleCarouselSlide('next'), slideDuration);
+    return () => clearInterval(slide);
+
+  }, [slideTimer, activeIndex])
 
   return (
     <Fragment>
@@ -46,16 +71,19 @@ function App() {
               <button
                 className="icon-only outlined"
                 data-testid="prev-slide-btn"
+                onClick={() => handleCarouselSlide('prev')}
               >
                 <i className="material-icons">arrow_back</i>
               </button>
               <Thumbs
                 items={catalogs}
                 currentIndex={activeIndex}
+                handleImageClick={handleImageClick}
               />
               <button
                 className="icon-only outlined"
                 data-testid="next-slide-btn"
+                onClick={() => handleCarouselSlide('next')}
               >
                 <i className="material-icons">arrow_forward</i>
               </button>
@@ -66,6 +94,8 @@ function App() {
           <input
             type='checkbox'
             data-testid='toggle-slide-show-button'
+            onChange={() => setSlideTimer(!slideTimer)}
+            checked={slideTimer}
           />
           <label className='ml-6'>Start Slide Show</label>
         </div>
